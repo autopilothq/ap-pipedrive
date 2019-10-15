@@ -42,26 +42,27 @@ pipedrive.Deals.getAll({}, function(err, deals) {
  * ActivityTypes
  * Authorizations
  * Currencies
+ * CompanyFeatures,
+ * CompanySettings,
  * Deals
  * DealFields
  * Files
  * Filters
+ * Goals
  * Notes
  * Organizations
  * OrganizationFields
+ * PermissionSets
  * Persons
  * PersonFields
  * Pipelines
  * Products
  * ProductFields
+ * Roles
  * SearchResults
  * Stages
  * Users
-
-# Authorization against email and password
-
-### Pipedrive.authenticate({ email: 'john@doe.com', password: 'example' }, [fn callback]);
-Fetches the possible API tokens for the given user against email and password, passing ```error, data, additionalData``` to the callback function. You can use the API tokens returned by this method to instantiate the API client by issuing ```var pipedrive = new Pipedrive.Client('API_TOKEN_HERE', { strictMode: true })```.
+ * Webhooks
 
 # Supported operations for object collections
 
@@ -69,7 +70,7 @@ Fetches the possible API tokens for the given user against email and password, p
 Add an object. Returns ```error, data``` to the callback where data contains the ```id``` property of the newly created item.
 
 ### pipedrive.{Object}.get (id, [fn callback])
-Get specific object. Returns ```error, object```
+Get specific object. Returns ```error, object, additionalData, rawRequest, rawResponse, relatedObjects```
 
 ### pipedrive.{Object}.update (id, data, [fn callback])
 Update an object. Returns ```error``` in case of an error to the callback.
@@ -122,7 +123,7 @@ To add a product to a deal, simply invoke the ```addProduct``` method on a deal 
 ```js
 pipedrive.Deals.get(1, function(err, deal) {
 	if (err) throw err;
-	deal.addProduct({ product_id: 1, quantity: 5, discount: 20 }, function(addErr, addData) {
+	deal.addProduct({ product_id: 1, quantity: 5, item_price: 10, discount: 20 }, function(addErr, addData) {
 		if (addErr) throw addErr;
 		console.log('Product 1 was added to deal 1', addData);
 	});
@@ -227,31 +228,18 @@ pipedrive.Filters.getAll({ type: 'deals' }, function(filtersListErr, filtersList
 });
 ```
 
-# Ad hoc data change event listeneres (beta)
-
-The API client lets you create event listeners to specific data changes in your Pipedrive account. This is very similar to Webhooks, except the listeners are bound on an ad hoc basis and will only be executed during the lifecycle of your application. For example (see below) you may want to execute a callback every time a new deal is added to Pipedrive. Note that this callback will execute not only when you create the deal through this API client but regardless of where the deal was added from — a mobile app, the web app or through the Pipedrive API by some other integration.
-
-```js
-var Pipedrive = require('pipedrive');
-var pipedrive = new Pipedrive.Client('PUT_YOUR_API_TOKEN_HERE', { strictMode: true });
-
-pipedrive.on('deal.added', function(event, data) {
-	console.log('A deal was added! ' + data.current.title + ' (' + data.current.value + ' ' + data.current.currency + ')');
-});
-```
-
-Supported event names consist of object type (deal, person, organization, ...) and type of change (`added`, `deleted`, `updated` or `merged`), joined by a dot. The list of supported object types are listed in the [Pipedrive Webhooks documentation](https://app.pipedrive.com/webhooks).
-
-To read more about ad hoc data change event listeners, check out [examples/live-updates.js](examples/live-updates.js).
-
 # API Documentation
 
 The Pipedrive REST API documentation can be found at https://developers.pipedrive.com/v1
 
-#Testing
+# Testing
 To run unit tests, execute `npm run tests`
 
 # Licence
 
 This Pipedrive API client is distributed under the MIT licence.
+
+# Contribution
+
+TBD
 
